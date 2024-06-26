@@ -31,16 +31,17 @@ def upload_face_from_user(face_pic,user_name,faceInPic_name):
     # save image
     img.save(image_path_to_save)
 
-def create_tmp_pic(face_pic,number):
-    tmp_path = '../tmp'
+def create_tmp_pic(face_pic, user_name):
+    tmp_path = '../tmp/'
     if not os.path.exists(tmp_path):
         os.makedirs(tmp_path)
+
 
 def is_image(pic):
     image_extensions = ['.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tif', '.tiff']
     # 检查文件扩展名是否是图片格式
     return any(pic.lower().endswith(ext) for ext in image_extensions)
-def compare_and_verify_face(face_pic, user_name, number):
+def compare_and_verify_face(face_pic, user_name):
 
     image_folders = [os.path.join('../pics/'+user_name, d) for d in os.listdir('../pics/'+user_name)
                      if os.path.isdir(os.path.join('../pics/'+user_name, d))
@@ -49,6 +50,10 @@ def compare_and_verify_face(face_pic, user_name, number):
     for image_folder in image_folders:
         images_in_folder = os.listdir(image_folder)
         for image_in_folder in images_in_folder:
-            DeepFace.verify()
+            result = DeepFace.verify(face_pic, os.path.join(image_folder, image_in_folder))
+            if result['verified']:
+                return os.path.basename(image_folder)
+    return 'not found match face'
 
-
+def get_all_face_in_pic(pic):
+    return DeepFace.extract_faces(pic)
