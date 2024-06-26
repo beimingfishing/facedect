@@ -1,7 +1,7 @@
 import cv2
 from deepface import DeepFace
 import os
-import PIL as Image
+import PIL as image
 import numpy as np
 
 model_name = ["VGG-FACE"]
@@ -9,6 +9,7 @@ model_name = ["VGG-FACE"]
 def get_face_feature(face_pic_path):
     return DeepFace.represent(face_pic_path)
 
+'''
 def upload_face_from_user(face_pic,user_name,faceInPic_name):
     # path of save images
     # using user_name and name of picture
@@ -27,9 +28,20 @@ def upload_face_from_user(face_pic,user_name,faceInPic_name):
     # create path to save
     image_path_to_save =  os.path.join(image_save_folder,saved_image_name)
     # use RGB to create pillow pic
-    img = Image.fromarray(face_pic, 'RGB')
+    img = image.fromarray(face_pic, 'RGB')
     # save image
     img.save(image_path_to_save)
+'''
+
+# new save func
+def upload_face_from_user(face_pic,user_name,faceInPic_name):
+    image_save_path = '../pics/'+user_name + '/' + faceInPic_name
+    if not os.path.exists(image_save_path):
+        os.mkdir(image_save_path)
+    images_in_folder = os.listdir(image_save_path)
+    number = len(images_in_folder)+1
+    name_of_pic = image_save_path + str(number) + '.jpg'
+    cv2.imwrite(name_of_pic, face_pic)
 
 def create_tmp_pic(face_pic, user_name):
     tmp_path = '../tmp/'
