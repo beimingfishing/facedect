@@ -47,3 +47,9 @@ async def upload_pic_from_user(file: UploadFile = File(...),
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/facedect/facesDect")
+async def dect_all_face(file: UploadFile = File(...),
+                        params: Params = Form(...)
+                        ):
+    try:
