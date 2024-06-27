@@ -1,6 +1,9 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
 import numpy as np
 from io import BytesIO
+from fastapi.responses import FileResponse
+
+
 from ..facedectapi import DeepFaceDect
 from pydantic import BaseModel
 import base64
@@ -61,7 +64,6 @@ async def dect_all_face(file: UploadFile = File(...),
 
         faces = DeepFaceDect.get_all_face_in_pic(image_rgb)
         if faces is not None:
-            name_of_pic = []
             for face in faces:
                 compare_result = DeepFaceDect.compare_and_verify_face(face['face'], params.user_name)
                 point_at_rightDown=(face['facial_area']['x'] + face['facial_area']['w'], face['facial_area']['y'] + face['facial_area']['h'])
@@ -77,6 +79,11 @@ async def dect_all_face(file: UploadFile = File(...),
                                 0.7,
                                 (0, 0, 255)
                                 )
+            _, buffer = cv2.imencode('.jpg', image_bgr)
+            image_bytes_return = buffer.tobytes()
+            return FileResponse(BytesIO(image_bytes_return), filename="face_dect_image.jpg", media_type="image/jpeg")
+
+            return
 
         else:
             return {
